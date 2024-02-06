@@ -1,3 +1,5 @@
-<show-more-list-nx-welcome></show-more-list-nx-welcome>
-<div *showMoreList></div>
-<router-outlet></router-outlet>
+<ul *showMoreList="3">
+  <li *ngFor="let item of list">{{item}}</li>
+</ul>
+<br><br>
+<button (click)="toggleList()">Toggle list</button>
