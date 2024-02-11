@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, TemplateRef } from '@angular/core';
 
 @Component({
   selector: 'show-more-list-show-more-list',
@@ -7,16 +7,30 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnDestr
   imports: [CommonModule],
   templateUrl: './show-more-list.component.html',
   styleUrls: ['./show-more-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShowMoreListComponent implements AfterViewInit, OnDestroy {
 
-  @Input() templateRef!: TemplateRef<any>;
-  @Input() minItems!: number;
-  @Input() showMoreText = 'Show more';
-  @Input() showLessText = 'Show less';
+  templateRef!: TemplateRef<any>;
+  showMoreText = 'Show more';
+  showLessText = 'Show less';
 
+  /**
+   * when true, hides the `<li>` with position afer minItems.
+   */
+  showLess = true;
+
+  /**
+   * True when the number of `<li>` exceeds the minItems.
+   * If `<li>` <= minItems there is no need to show an option to hide/show.
+   */
   showToggle!: boolean;
-  toggle = false;
+
+  private _minItems!: number;
+  set minItems(minItems: number) {
+    this._minItems = minItems;
+    this.initializeToggleOption();
+  }
 
   private mutationObserver = new MutationObserver(this.initializeToggleOption.bind(this));
 
@@ -27,7 +41,6 @@ export class ShowMoreListComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.initializeToggleOption();
-    this.cdr.detectChanges();
     this.mutationObserver.observe(this.element.nativeElement.querySelector('ul'), {childList: true});
   }
 
@@ -35,20 +48,26 @@ export class ShowMoreListComponent implements AfterViewInit, OnDestroy {
     this.mutationObserver.disconnect();
   }
 
-  toggleShowMore(showMore?: boolean): void {
-    this.toggle = showMore !== undefined ? showMore : !this.toggle;
+  /**
+   * Shows/hide the `<li>`.
+   *
+   * @param showLess True, hide the `<li>`, false shows them.
+   */
+  updateVisibility(showLess: boolean): void {
+    this.showLess = showLess;
     const liTags = this.element.nativeElement.querySelectorAll('li');
-    for(let i = this.minItems; i < liTags.length; i++) {
-      (liTags.item(i) as HTMLElement).style.display = this.toggle ? '' : 'none';
-    }
+    Array.from<HTMLElement>(liTags).forEach((li: HTMLElement, i: number) => {
+      // if should show less and the <li> is above the minItems, hide it
+      li.style.display = this.showLess && i + 1 > this._minItems ? 'none' : '';
+    });
+
   }
 
   private initializeToggleOption(): void {
     const totalLiTags = this.element.nativeElement.querySelectorAll('li').length;
-    this.showToggle = totalLiTags > this.minItems;
-    if(this.showToggle) {
-      this.toggleShowMore(this.toggle);
-    }
+    this.showToggle = totalLiTags > this._minItems;
+    this.updateVisibility(this.showLess);
+    this.cdr.detectChanges();
   }
 
 }

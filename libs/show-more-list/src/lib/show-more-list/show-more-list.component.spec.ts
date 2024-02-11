@@ -39,46 +39,48 @@ describe('ShowMoreListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('#ngAfterViewInit()',() => {
+  it('should have default showMoreText', () => {
+    expect(component.showMoreText).toBe('Show more');
+  });
 
-    describe('when there are more <li> tags than given min items', () => {
+  it('should have default showLessText', () => {
+    expect(component.showLessText).toBe('Show less');
+  });
+
+  it('should show less by default', () => {
+    expect(component.showLess).toBe(true);
+  });
+
+  describe('#set minItems()',() => {
+
+    describe('when there are more li tags than min items', () => {
 
       beforeEach(() => {
+        ul.append(document.createElement('li'));
+        ul.append(document.createElement('li'));
+        ul.append(document.createElement('li'));
         component.minItems = 2;
-        ul.appendChild(document.createElement('li'));
-        ul.appendChild(document.createElement('li'));
-        ul.appendChild(document.createElement('li'));
       });
 
-      it('should show toggle option', () => {
+      it('should hide exceeding li tags', () => {
+        const updateVisibilitySpy = jest.spyOn(component, 'updateVisibility');
         component.ngAfterViewInit();
-        expect(component.showToggle).toBe(true);
-      });
-
-      it('should toggle show more', () => {
-        const toogleSpy = jest.spyOn(component, 'toggleShowMore');
-        component.ngAfterViewInit();
-        expect(toogleSpy).toHaveBeenCalledWith(component.toggle);
+        expect(updateVisibilitySpy).toHaveBeenCalledWith(true);
       });
     });
 
-    describe('when there are is the same amount of <li> tags as the given min items', () => {
+    describe(`when the amount of li tags doesn't exceed the min items`, () => {
 
       beforeEach(() => {
+        ul.append(document.createElement('li'));
+        ul.append(document.createElement('li'));
         component.minItems = 2;
-        ul.appendChild(document.createElement('li'));
-        ul.appendChild(document.createElement('li'));
       });
 
-      it('should not show toggle option', () => {
+      it('should hide exceeding li tags', () => {
+        const updateVisibilitySpy = jest.spyOn(component, 'updateVisibility');
         component.ngAfterViewInit();
-        expect(component.showToggle).toBe(false);
-      });
-
-      it('should not toggle show more', () => {
-        const toogleSpy = jest.spyOn(component, 'toggleShowMore');
-        component.ngAfterViewInit();
-        expect(toogleSpy).not.toHaveBeenCalled();
+        expect(updateVisibilitySpy).toHaveBeenCalledWith(true);
       });
     });
 
@@ -89,68 +91,82 @@ describe('ShowMoreListComponent', () => {
     });
   });
 
-  describe('#toggleShowMore()', () => {
+  describe('#updateVisibility()', () => {
 
-    describe('when show more flag is given', () => {
-
-      it('should set toggle to the same value as show more flag', () => {
-        component.toggle = true;
-        component.toggleShowMore(false);
-        expect(component.toggle).toBe(false);
-      });
+    beforeEach(() => {
+      ul.append(document.createElement('li'));
+      ul.append(document.createElement('li'));
+      ul.append(document.createElement('li'));
+      ul.append(document.createElement('li'));
+      component.minItems = 2;
     })
 
-    describe('when show more flag is not given', () => {
-
-      describe('and current toggle is true', () => {
-
-        beforeEach(() => {
-          component.toggle = true;
-        });
-
-        it('should set toggle to false', () => {
-          component.toggleShowMore()
-          expect(component.toggle).toBe(false);
-        });
+    describe('when should not show less', () => {
+      it('should show all li elements with position after min items', () => {
+        component.updateVisibility(false);
+        const hiddenElement = Array.from(ul.childNodes).find((li: any) => li.style.display !== '');
+        expect(hiddenElement).toBeUndefined()
       });
 
-      describe('and current toggle is false', () => {
+      it('should update showLess flag to false', () => {
+        component.updateVisibility(false);
+        expect(component.showLess).toBe(false);
+      });
+    });
 
-        beforeEach(() => {
-          component.toggle = false;
-        });
-
-        it('should set toggle to true', () => {
-          component.toggleShowMore()
-          expect(component.toggle).toBe(true);
-        });
+    describe('when should show less', () => {
+      it('should show all li elements with position after min items', () => {
+        component.updateVisibility(true)
+        const hiddenElements = Array.from(ul.childNodes).filter((li: any) => li.style.display === 'none');
+        expect(hiddenElements).toEqual([ul.childNodes[2], ul.childNodes[3]])
       });
 
 
-      describe('when should show more', () => {
-        it('should show all li elements with position after min items', () => {
-          component.minItems = 2;
-          ul.append(document.createElement('li'));
-          ul.append(document.createElement('li'));
-          ul.append(document.createElement('li'));
-          component.toggleShowMore(true);
-          const hiddenElement = Array.from(ul.childNodes).find((li: any) => li.style.display !== '');
-          expect(hiddenElement).toBeUndefined()
-        });
-      })
-
-      describe('when should show less', () => {
-        it('should hide all li elements with position after in items', () => {
-          component.minItems = 2;
-          ul.append(document.createElement('li'));
-          ul.append(document.createElement('li'));
-          ul.append(document.createElement('li'));
-          ul.append(document.createElement('li'));
-          component.toggleShowMore(false);
-          const hiddenElements = Array.from(ul.childNodes).filter((li: any) => li.style.display === 'none');
-          expect(hiddenElements).toEqual([ul.childNodes[2], ul.childNodes[3]])
-        });
-      })
+      it('should update showLess flag to true', () => {
+        component.updateVisibility(true);
+        expect(component.showLess).toBe(true);
+      });
     });
   });
+
+  describe('#ngAfterViewInit()',() => {
+
+    describe('when there are more li tags than min items', () => {
+
+      beforeEach(() => {
+        ul.append(document.createElement('li'));
+        ul.append(document.createElement('li'));
+        ul.append(document.createElement('li'));
+        component.minItems = 2;
+      });
+
+      it('should hide exceeding li tags', () => {
+        const updateVisibilitySpy = jest.spyOn(component, 'updateVisibility');
+        component.ngAfterViewInit();
+        expect(updateVisibilitySpy).toHaveBeenCalledWith(true);
+      });
+    });
+
+    describe(`when the amount of li tags doesn't exceed the min items`, () => {
+
+      beforeEach(() => {
+        ul.append(document.createElement('li'));
+        ul.append(document.createElement('li'));
+        component.minItems = 2;
+      });
+
+     it('should hide exceeding li tags', () => {
+        const updateVisibilitySpy = jest.spyOn(component, 'updateVisibility');
+        component.ngAfterViewInit();
+        expect(updateVisibilitySpy).toHaveBeenCalledWith(true);
+      });
+    });
+
+    it('should detect changes', () => {
+      component['cdr'] = changeDetectorRefSpy;
+      component.ngAfterViewInit();
+      expect(changeDetectorRefSpy.detectChanges).toHaveBeenCalledTimes(1);
+    });
+  });
+
 });

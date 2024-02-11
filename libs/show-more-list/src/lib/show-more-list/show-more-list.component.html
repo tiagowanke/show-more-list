@@ -1,2 +1,2 @@
 <div *ngTemplateOutlet="templateRef"></div>
-<a *ngIf="showToggle" (click)="toggleShowMore()">{{toggle ? showLessText : showMoreText}}</a>
+<a *ngIf="showToggle" (click)="updateVisibility(!showLess)">{{showLess ? showMoreText : showLessText}}</a>
