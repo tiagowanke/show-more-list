@@ -22,3 +22,7 @@ Visit the [Nx Documentation](https://nx.dev) to learn more.
 
 ## Test
 Run `npx nx run-many --all --target=test` to run all tests.
+
+
+## Storybook
+Run `nx run show-more-list:storybook` to start storybook
