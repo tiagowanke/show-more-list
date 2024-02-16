@@ -9,14 +9,12 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [18.x]
+        parallel-step: [build, test]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
@@ -25,5 +23,15 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run build --if-present
-    - run: npx nx run-many --all --target=test
+    # - run: npm run build --if-present
+    # - run: npx nx run-many --all --target=test
+    - run: |
+        if [ "${{ matrix.parallel-step }}" == "build" ]; then
+          npm run build --if-present
+        elif [ "${{ matrix.parallel-step }}" == "test" ]; then
+          npx nx run-many --all --target=test
+        fi
+
+
+
+
