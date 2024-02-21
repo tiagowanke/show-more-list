@@ -25,4 +25,4 @@ Run `npx nx run-many --all --target=test` to run all tests.
 
 
 ## Storybook
-Run `nx run show-more-list:storybook` to start storybook
+Run `nx run smart-list:storybook` to start storybook

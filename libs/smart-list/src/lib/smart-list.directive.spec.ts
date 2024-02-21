@@ -1,23 +1,23 @@
 import { SimpleChange, SimpleChanges } from '@angular/core';
-import { ShowMoreListDirective } from './show-more-list.directive';
-import { ShowMoreListComponent } from './show-more-list/show-more-list.component';
+import { SmartListDirective } from './smart-list.directive';
+import { SmartListComponent } from './smart-list/smart-list.component';
 
-describe('ShowMoreListDirective', () => {
+describe('SmartListDirective', () => {
 
-  let directive: ShowMoreListDirective;
+  let directive: SmartListDirective;
   let viewSpy: any;
   let templateRefSpy: any;
   let componentRefMock: any;
 
   beforeEach(async () => {
     componentRefMock = {
-      instance: {} as ShowMoreListComponent
+      instance: {} as SmartListComponent
     } ;
     viewSpy = {
       createComponent: jest.fn().mockReturnValue(componentRefMock)
     };
     templateRefSpy = {};
-    directive = new ShowMoreListDirective(viewSpy, templateRefSpy);
+    directive = new SmartListDirective(viewSpy, templateRefSpy);
     directive.ngOnInit();
   });
 
@@ -28,7 +28,7 @@ describe('ShowMoreListDirective', () => {
   describe('#ngOnInit()', () => {
     it('should create gear show more list component', () => {
       directive.ngOnInit();
-      expect(viewSpy.createComponent).toHaveBeenCalledWith(ShowMoreListComponent);
+      expect(viewSpy.createComponent).toHaveBeenCalledWith(SmartListComponent);
     })
 
     it('should set template ref', () => {

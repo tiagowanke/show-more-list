@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { ShowMoreListDirective } from './show-more-list.directive';
+import { SmartListDirective } from './smart-list.directive';
 import { Meta, StoryObj } from '@storybook/angular';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, ShowMoreListDirective],
+  imports: [CommonModule, SmartListDirective],
   selector: 'dummy',
   template: `
-    <ul *showMoreList="minItems;showMoreText:'Mostrar Mais';showLessText:'Mostrar Menos'">
+    <ul *smartList="minItems;showMoreText:'Mostrar Mais';showLessText:'Mostrar Menos'">
       <li *ngFor="let item of list">{{item}}</li>
     </ul>
     <br><br>
@@ -45,7 +45,7 @@ export class DummyComponent {
 
 const meta: Meta<DummyComponent> = {
   component: DummyComponent,
-  title: 'ShowMoreList',
+  title: 'SmartList',
   // argTypes: {
   //   minItems: { control: 'number' }
   // }

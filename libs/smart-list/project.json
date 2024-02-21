@@ -28,6 +28,53 @@
       "options": {
         "jestConfig": "libs/smart-list/jest.config.ts"
       }
+    },
+    "storybook": {
+      "executor": "@storybook/angular:start-storybook",
+      "options": {
+        "port": 4400,
+        "configDir": "libs/smart-list/.storybook",
+        "browserTarget": "smart-list:build-storybook",
+        "compodoc": false
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "build-storybook": {
+      "executor": "@storybook/angular:build-storybook",
+      "outputs": ["{options.outputDir}"],
+      "options": {
+        "outputDir": "dist/storybook/smart-list",
+        "configDir": "libs/smart-list/.storybook",
+        "browserTarget": "smart-list:build-storybook",
+        "compodoc": false
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "test-storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "test-storybook -c libs/smart-list/.storybook --url=http://localhost:4400"
+      }
+    },
+    "static-storybook": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "smart-list:build-storybook",
+        "staticFilePath": "dist/storybook/smart-list"
+      },
+      "configurations": {
+        "ci": {
+          "buildTarget": "smart-list:build-storybook:ci"
+        }
+      }
     }
   }
 }

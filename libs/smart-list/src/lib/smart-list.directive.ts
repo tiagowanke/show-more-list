@@ -1,5 +1,5 @@
 import { ComponentRef, Directive, Input, OnChanges, OnInit, SimpleChanges, TemplateRef, ViewContainerRef } from '@angular/core';
-import { ShowMoreListComponent } from './show-more-list/show-more-list.component';
+import { SmartListComponent } from './smart-list/smart-list.component';
 
 /**
  * Directive to be used in `<ul>` tag to add Show more/less options.
@@ -25,17 +25,17 @@ import { ShowMoreListComponent } from './show-more-list/show-more-list.component
  * ```
  */
 @Directive({
-  selector: '[showMoreList]',
+  selector: '[smartList]',
   standalone: true,
 })
-export class ShowMoreListDirective implements OnInit, OnChanges {
+export class SmartListDirective implements OnInit, OnChanges {
 
-  @Input('showMoreList') count!: number;
+  @Input('smartList') count!: number;
   @Input() showMoreListShowLess?: boolean;
   @Input() showMoreListShowMoreText?: string;
   @Input() showMoreListShowLessText?: string;
 
-  private componentRef!: ComponentRef<ShowMoreListComponent>;
+  private componentRef!: ComponentRef<SmartListComponent>;
 
   constructor(
     private view: ViewContainerRef,
@@ -43,7 +43,7 @@ export class ShowMoreListDirective implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.componentRef = this.view.createComponent(ShowMoreListComponent);
+    this.componentRef = this.view.createComponent(SmartListComponent);
     this.componentRef.instance.templateRef = this.template;
     this.componentRef.instance.minItems = this.count;
 
