@@ -1,0 +1,33 @@
+{
+  "name": "smart-list",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/smart-list/src",
+  "prefix": "lib",
+  "tags": [],
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:package",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "options": {
+        "project": "libs/smart-list/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/smart-list/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/smart-list/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/smart-list/jest.config.ts"
+      }
+    }
+  }
+}

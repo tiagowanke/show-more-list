@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@show-more-list/show-more-list": ["libs/show-more-list/src/index.ts"]
+      "@show-more-list/show-more-list": ["libs/show-more-list/src/index.ts"],
+      "tiagowanke@smart-list": ["libs/smart-list/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
